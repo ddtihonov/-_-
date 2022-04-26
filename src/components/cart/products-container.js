@@ -12,7 +12,7 @@ import { DataContext, PromoContext } from '../../services/productsContext';
 
 export const ProductsContainer = () => {
   const { setTotalPrice } = useContext(TotalPriceContext);
-  const { setDiscount } = useContext(DiscountContext);
+  const { discountDispatcher } = useContext(DiscountContext);
 
   const [data, setData] = useState([]);
   const [promo, setPromo] = useState('');
@@ -55,13 +55,13 @@ export const ProductsContainer = () => {
         .then(res => {
           if (res && res.success) {
             setPromo(inputValue);
-            setDiscount(res.discount);
+            discountDispatcher({type: 'set', payload: 10});
             setPromoRequest(false);
             setPromoFailed(false);
           } else {
             setPromoFailed(true);
             setPromoRequest(false);
-            setDiscount(null);
+            discountDispatcher({type: 'reset'});
             setPromo('');
           }
         })
@@ -70,7 +70,7 @@ export const ProductsContainer = () => {
           setPromoRequest(false);
         });
     },
-    [setDiscount]
+    [discountDispatcher]
   );
 
   const content = useMemo(

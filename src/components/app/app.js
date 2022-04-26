@@ -21,14 +21,13 @@ function reducer(state, action) {
 
 function App() {
   const [totalPrice, setTotalPrice] = useState(0);
-  const [discount, setDiscount] = useState(null);
 
   const [discountState, discountDispatcher] = useReducer(reducer, discountInitialState, undefined);
 
   return (
     <div className={styles.app}>
       <TotalPriceContext.Provider value={{ totalPrice, setTotalPrice }}>
-        <DiscountContext.Provider value={{ discount, setDiscount }}>
+        <DiscountContext.Provider value={{ discountState, discountDispatcher }}>
           <Title text={'Корзина'} />
           <Cart />
           <TotalPrice />
