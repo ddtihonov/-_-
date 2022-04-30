@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { applyPromoCodeRequest, getItemsRequest } from '../../services/fakeApi';
 import styles from './products-container.module.css';
@@ -8,15 +8,7 @@ import { MainButton } from '../../ui/main-button/main-button';
 import { PromoButton } from '../../ui/promo-button/promo-button';
 import { Loader } from '../../ui/loader/loader';
 
-import { DiscountContext, TotalPriceContext } from '../../services/appContext';
-import { PromoContext } from '../../services/productsContext';
-
 export const ProductsContainer = () => {
-  const { setTotalPrice } = useContext(TotalPriceContext);
-  const { discountDispatcher } = useContext(DiscountContext);
-
-  const [promo, setPromo] = useState('');
-
   const [itemsRequest, setItemsRequest] = useState(false);
   const [promoFailed, setPromoFailed] = useState(false);
   const [promoRequest, setPromoRequest] = useState(false);
@@ -25,7 +17,7 @@ export const ProductsContainer = () => {
 
 
   const items  = useSelector(store => store.cart.items)
-
+  const promoCode  = useSelector(store => store.cart.promoCode)
 
   useEffect(() => {
     setItemsRequest(true);
@@ -45,9 +37,8 @@ export const ProductsContainer = () => {
     () => {
       let total = 0;
       items.map(item => (total += item.price * item.qty));
-      setTotalPrice(total);
     },
-    [items, setTotalPrice]
+    [items]
   );
 
   const applyPromoCode = useCallback(
@@ -57,15 +48,11 @@ export const ProductsContainer = () => {
       applyPromoCodeRequest(inputValue)
         .then(res => {
           if (res && res.success) {
-            setPromo(inputValue);
-            discountDispatcher({type: 'set', payload: 10});
             setPromoRequest(false);
             setPromoFailed(false);
           } else {
             setPromoFailed(true);
             setPromoRequest(false);
-            discountDispatcher({type: 'reset'});
-            setPromo('');
           }
         })
         .catch(err => {
@@ -73,7 +60,7 @@ export const ProductsContainer = () => {
           setPromoRequest(false);
         });
     },
-    [discountDispatcher]
+    []
   );
 
   const content = useMemo(
@@ -95,18 +82,17 @@ export const ProductsContainer = () => {
         <p className={styles.text}>Произошла ошибка! Проверьте корректность введенного промокода</p>
       ) : promoRequest ? (
         ''
-      ) : promo ? (
+      ) : promoCode ? (
         <p className={styles.text}>Промокод успешно применён!</p>
       ) : (
         ''
       );
     },
-    [promoRequest, promo, promoFailed]
+    [promoRequest, promoCode, promoFailed]
   );
 
   return (
     <div className={`${styles.container}`}>
-        <PromoContext.Provider value={{ promo, setPromo }}>
           {content}
           <div className={styles.promo}>
             <div className={styles.inputWithBtn}>
@@ -126,10 +112,9 @@ export const ProductsContainer = () => {
                 {promoRequest ? <Loader size="small" inverse={true} /> : 'Применить'}
               </MainButton>
             </div>
-            {promo && <PromoButton extraClass={styles.promocode}>{promo}</PromoButton>}
+            {promoCode && <PromoButton extraClass={styles.promocode}>{promoCode}</PromoButton>}
           </div>
           {promoCodeStatus}
-        </PromoContext.Provider>
     </div>
   );
 };
