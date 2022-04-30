@@ -1,15 +1,21 @@
 import React, { useContext, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { AmountButton } from '../../ui/amount-button/amount-button';
 import { DeleteButton } from '../../ui/delete-button/delete-button';
 import styles from './product.module.css';
+import {
+  DELETE_ITEM,
+  DECREASE_ITEM,
+  INCREASE_ITEM,
+} from '../../services/actions/cart';
 
 import { DiscountContext, TotalPriceContext } from '../../services/appContext';
-import { DataContext } from '../../services/productsContext';
 
 export const Product = ({ src, id, text, qty, price }) => {
   const { totalPrice, setTotalPrice } = useContext(TotalPriceContext);
   const { discountState } = useContext(DiscountContext);
-  const { data, setData } = useContext(DataContext);
+
+  const dispatch = useDispatch();
 
   const discountedPrice = useMemo(() => ((price - price * (discountState.discount / 100)) * qty).toFixed(0), [
     discountState.discount,
@@ -18,7 +24,10 @@ export const Product = ({ src, id, text, qty, price }) => {
   ]);
 
   const onDelete = () => {
-    setData(data.filter(item => item.id !== id));
+    dispatch({
+    type: DELETE_ITEM,
+    id
+} )
   };
 
   const decrease = () => {
@@ -26,28 +35,21 @@ export const Product = ({ src, id, text, qty, price }) => {
       onDelete();
     } else {
       setTotalPrice(totalPrice - price);
-      const newData = data.map(item => {
-        if (item.id === id) {
-          item.qty -= 1;
-          return item;
-        }
-        return item;
-      });
-      setData(newData);
+      dispatch({
+        type: DECREASE_ITEM,
+        id
+    } )
     }
   };
 
   const increase = () => {
     setTotalPrice(totalPrice + price);
-    const newData = data.map(item => {
-      if (item.id === id) {
-        item.qty += 1;
-        return item;
-      }
-      return item;
-    });
-    setData(newData);
+    dispatch({
+      type: INCREASE_ITEM,
+      id
+  })
   };
+
 
   return (
     <div className={`${styles.product}`}>
