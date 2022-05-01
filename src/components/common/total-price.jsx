@@ -1,9 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './total-price.module.css';
 
 export const TotalPrice = ({ extraClass }) => {
-
+  
+  const dispatch = useDispatch();
 
   const totalPrice = useSelector(store => store.cart.items.reduce((acc, item) => acc + item.price * item.qty, 0))
 
