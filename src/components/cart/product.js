@@ -1,20 +1,14 @@
 import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { AmountButton } from '../../ui/amount-button/amount-button';
 import { DeleteButton } from '../../ui/delete-button/delete-button';
 import styles from './product.module.css';
-import {
-  DELETE_ITEM,
-  DECREASE_ITEM,
-  INCREASE_ITEM,
-} from '../../services/actions/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { DECREASE_ITEM, DELETE_ITEM, INCREASE_ITEM } from '../../services/actions/cart';
 
 export const Product = ({ src, id, text, qty, price }) => {
-
   const dispatch = useDispatch();
 
-  const discount  = useSelector(store => store.cart.promoDiscount)
+  const discount = useSelector(store => store.cart.promoDiscount);
 
   const discountedPrice = useMemo(() => ((price - price * (discount / 100)) * qty).toFixed(0), [
     discount,
@@ -22,12 +16,11 @@ export const Product = ({ src, id, text, qty, price }) => {
     qty
   ]);
 
-
   const onDelete = () => {
     dispatch({
-    type: DELETE_ITEM,
-    id
-} )
+      type: DELETE_ITEM,
+      id
+    });
   };
 
   const decrease = () => {
@@ -37,17 +30,15 @@ export const Product = ({ src, id, text, qty, price }) => {
       dispatch({
         type: DECREASE_ITEM,
         id
-    } )
+      });
     }
   };
-
   const increase = () => {
     dispatch({
       type: INCREASE_ITEM,
       id
-  })
+    });
   };
-
 
   return (
     <div className={`${styles.product}`}>

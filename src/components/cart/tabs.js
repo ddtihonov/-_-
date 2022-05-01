@@ -10,8 +10,8 @@ export const Tabs = () => {
 
   return (
     <div className={`${styles.tabs}`}>
-      <Tab text="Товары в корзине" value="items" active />
-      <Tab text="Отложенные товары" />
+      <Tab text="Товары в корзине"  active={currentTab === 'items'} />
+      <Tab text="Отложенные товары" active={currentTab === 'postponed'}/>
     </div>
   );
 };

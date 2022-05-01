@@ -1,16 +1,11 @@
 import { combineReducers } from 'redux';
-
 import { cartReducer } from './cart';
-
-import {
-    PREVIOUS_STEP,
-    NEXT_STEP,
-} from '../actions/index';
+import { NEXT_STEP, PREVIOUS_STEP } from '../actions';
 
 const stepReducer = (state = 'cart', action) => {
     switch (action.type) {
         case NEXT_STEP: {
-            return state === 'cart'
+        return state === 'cart'
             ? 'delivery'
             : state === 'delivery'
             ? 'checkout'
@@ -19,21 +14,23 @@ const stepReducer = (state = 'cart', action) => {
             : 'checkout';
         }
         case PREVIOUS_STEP: {
-            return state === 'cart'
-            ? 'cart' 
-            : state === 'cart'
+        return state === 'cart'
+            ? 'cart'
+            : state === 'delivery'
+            ? 'cart'
+            : state === 'checkout'
             ? 'delivery'
-            : state === 'cart'
-            ? 'checkout'
-            : state === 'delivery';
-        } 
+            : 'cart';
+        }
         default: {
-            return state;
+        return state;
         }
     }
 };
 
 export const rootReducer = combineReducers({
-    cart: cartReducer,
     step: stepReducer,
+    cart: cartReducer,
 });
+
+

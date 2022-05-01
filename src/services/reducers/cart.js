@@ -3,44 +3,61 @@ import {
     CANCEL_PROMO,
     DECREASE_ITEM,
     INCREASE_ITEM,
-    TAB_SWITCH,
+    GET_ITEMS_FAILED,
+    GET_ITEMS_REQUEST,
+    GET_ITEMS_SUCCESS,
+    TAB_SWITCH
 } from '../actions/cart';
-import { recommendedItems, items } from '../initialData';
+import { recommendedItems} from '../initialData';
 
 //начальное состояние
 const initialState = {
-    items,
+    items: [],
+    itemsRequest: false,
+    itemsFailed: false,
 
     recommendedItems,
 
-    promoCode: '',
-    promoDiscount: null,
+    promoCode: 'PROMOCODE',
+    promoDiscount: 50,
 
     currentTab: 'items'
 };
 
 export const cartReducer = (state = initialState, action) => {
     switch (action.type) {
+        case GET_ITEMS_REQUEST: {
+            return {
+                ...state,
+                itemsRequest: true
+            };
+        }
+        case GET_ITEMS_SUCCESS: {
+            return { ...state, itemsFailed: false, items: action.items, itemsRequest: false };
+            }
+        case GET_ITEMS_FAILED: {
+            return { ...state, itemsFailed: true, itemsRequest: false };
+        }
         case TAB_SWITCH: {
             return {
-            ...state,
-            currentTab: state.currentTab === 'items' ? 'postponed' : 'items'
+                ...state,
+                currentTab: state.currentTab === 'items' ? 'postponed' : 'items'
             };
         }
         case INCREASE_ITEM: {
             return {
                 ...state,
                 items: [...state.items].map(item =>
-                    item.id === action.id ? { ...item, qty: ++item.qty } : item
+                item.id === action.id ? { ...item, qty: ++item.qty } : item
                 )
             };
         }
         case DECREASE_ITEM: {
             return {
-            ...state,
-            items: [...state.items].map(item =>
+                ...state,
+                items: [...state.items].map(item =>
                 item.id === action.id ? { ...item, qty: --item.qty } : item
-            )
+                )
             };
         }
         case DELETE_ITEM: {
@@ -48,9 +65,9 @@ export const cartReducer = (state = initialState, action) => {
         }
         case CANCEL_PROMO: {
             return {
-            ...state,
-            promoCode: '',
-            promoDiscount: null
+                ...state,
+                promoCode: '',
+                promoDiscount: null
             };
         }
         default: {

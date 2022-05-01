@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { applyPromoCodeRequest, getItemsRequest } from '../../services/fakeApi';
 import styles from './products-container.module.css';
 import { Product } from './product';
@@ -8,16 +7,17 @@ import { MainButton } from '../../ui/main-button/main-button';
 import { PromoButton } from '../../ui/promo-button/promo-button';
 import { Loader } from '../../ui/loader/loader';
 
+import { useSelector } from 'react-redux';
+
 export const ProductsContainer = () => {
+  const items = useSelector(store => store.cart.items);
+  const promoCode = useSelector(state => state.cart.promoCode);
+
   const [itemsRequest, setItemsRequest] = useState(false);
   const [promoFailed, setPromoFailed] = useState(false);
   const [promoRequest, setPromoRequest] = useState(false);
 
   const inputRef = useRef(null);
-
-
-  const items  = useSelector(store => store.cart.items)
-  const promoCode  = useSelector(store => store.cart.promoCode)
 
   useEffect(() => {
     setItemsRequest(true);
@@ -33,35 +33,24 @@ export const ProductsContainer = () => {
       });
   }, []);
 
-  useEffect(
-    () => {
-      let total = 0;
-      items.map(item => (total += item.price * item.qty));
-    },
-    [items]
-  );
-
-  const applyPromoCode = useCallback(
-    () => {
-      const inputValue = inputRef.current.value;
-      setPromoRequest(true);
-      applyPromoCodeRequest(inputValue)
-        .then(res => {
-          if (res && res.success) {
-            setPromoRequest(false);
-            setPromoFailed(false);
-          } else {
-            setPromoFailed(true);
-            setPromoRequest(false);
-          }
-        })
-        .catch(err => {
-          console.log(err);
+  const applyPromoCode = useCallback(() => {
+    const inputValue = inputRef.current.value;
+    setPromoRequest(true);
+    applyPromoCodeRequest(inputValue)
+      .then(res => {
+        if (res && res.success) {
           setPromoRequest(false);
-        });
-    },
-    []
-  );
+          setPromoFailed(false);
+        } else {
+          setPromoFailed(true);
+          setPromoRequest(false);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        setPromoRequest(false);
+      });
+  }, []);
 
   const content = useMemo(
     () => {
@@ -93,28 +82,28 @@ export const ProductsContainer = () => {
 
   return (
     <div className={`${styles.container}`}>
-          {content}
-          <div className={styles.promo}>
-            <div className={styles.inputWithBtn}>
-              <Input
-                type="text"
-                placeholder="Введите промокод"
-                extraClass={styles.input}
-                inputWithBtn={true}
-                inputRef={inputRef}
-              />
-              <MainButton
-                type="button"
-                extraClass={styles.promo_button}
-                inputButton={true}
-                onClick={applyPromoCode}
-              >
-                {promoRequest ? <Loader size="small" inverse={true} /> : 'Применить'}
-              </MainButton>
-            </div>
-            {promoCode && <PromoButton extraClass={styles.promocode}>{promoCode}</PromoButton>}
-          </div>
-          {promoCodeStatus}
+      {content}
+      <div className={styles.promo}>
+        <div className={styles.inputWithBtn}>
+          <Input
+            type="text"
+            placeholder="Введите промокод"
+            extraClass={styles.input}
+            inputWithBtn={true}
+            inputRef={inputRef}
+          />
+          <MainButton
+            type="button"
+            extraClass={styles.promo_button}
+            inputButton={true}
+            onClick={applyPromoCode}
+          >
+            {promoRequest ? <Loader size="small" inverse={true} /> : 'Применить'}
+          </MainButton>
+        </div>
+        {promoCode && <PromoButton extraClass={styles.promocode}>{promoCode}</PromoButton>}
+      </div>
+      {promoCodeStatus}
     </div>
   );
 };

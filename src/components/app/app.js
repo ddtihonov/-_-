@@ -6,9 +6,6 @@ import { TotalPrice } from '../common/total-price';
 
 
 function App() {
-
-  
-
   return (
     <div className={styles.app}>
           <Title text={'Корзина'} />
