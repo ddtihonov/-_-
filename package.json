@@ -3,7 +3,7 @@
   "name": "shopping-cart",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ddtihonov.github.io/react-burger/",
+  "homepage": "https://ddtihonov.github.io/shopping-cart/",
 
   "dependencies": {
     "@types/node": "^17.0.31",
