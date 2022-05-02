@@ -18,10 +18,43 @@ export const Tab = ({ text, tabName }) => {
     dispatch({ type: TAB_SWITCH });
   };
 
-  const className = `${styles.tab} ${currentTab === tabName ? styles.tab_type_current : ''}`;
+  const [{ isHover }, dropTarget] = useDrop({
+    accept: tabName === 'items' ? 'postponed' : 'items',
+    drop(itemId) { currentTab === 'items' ? moveItem(itemId) :  movePostponedItem(itemId)},
+    collect: monitor => ({
+      isHover: monitor.isOver()
+    })
+  });
+
+  const className = `${styles.tab} ${currentTab === tabName ? styles.tab_type_current : ''} ${
+    isHover ? styles.onHover : ''
+  }`;
+  
+  const movePostponedItem = (item) => {
+  dispatch({
+    type: ADD_ITEM,
+    ...item
+  });
+  dispatch({
+    type: DELETE_POSTPONED_ITEM,
+    ...item
+  })
+}; 
+  
+ const moveItem = (item) => {
+  dispatch({
+    type: ADD_POSTPONED_ITEM,
+    ...item
+  });
+  dispatch({
+    type: DELETE_ITEM,
+    ...item
+  })
+};  
+  
   return (
-    <div className={className} onClick={switchTab}>
+    <div ref={dropTarget} className={`${className}`} onClick={switchTab}>
       {text}
     </div>
   );
-};////////////
+};
