@@ -18,65 +18,68 @@ export const APPLY_PROMO_FAILED = 'APPLY_PROMO_FAILED'//ошибка актив�
 export const APPLY_PROMO_REQUEST = 'APPLY_PROMO_REQUEST'//произошёл запрос,
 export const APPLY_PROMO_SUCCESS = 'APPLY_PROMO_SUCCESS'//запрос выполнился успешно.
 
-export function getItems (){
-    return (dispatch) => {
+
+export const ADD_ITEM = 'ADD_ITEM';
+export const ADD_POSTPONED_ITEM = 'ADD_POSTPONED_ITEM';
+export const DELETE_POSTPONED_ITEM = 'DELETE_POSTPONED_ITEM';
+
+export function applyPromo(code) {
+    return function(dispatch) {
+        dispatch({
+            type: APPLY_PROMO_REQUEST,
+            code
+        });
+        applyPromoCodeRequest(code).then(res => {
+            if (res && res.success) {
+            dispatch({
+                type: APPLY_PROMO_SUCCESS,
+                value: { ...res, code }
+            });
+            } else {
+            dispatch({
+                type: APPLY_PROMO_FAILED
+            });
+            }
+        });
+        };
+}
+
+export function getItems() {
+        return function(dispatch) {
         dispatch({
             type: GET_ITEMS_REQUEST
         });
+        getItemsRequest().then(res => {
+            if (res && res.success) {
+            dispatch({
+                type: GET_ITEMS_SUCCESS,
+                items: res.data
+            });
+            } else {
+            dispatch({
+                type: GET_ITEMS_FAILED
+            });
+            }
+        });
+        };
+}
 
-    getItemsRequest().then(res => {
-    if (res && res.success) {
-        dispatch({
-        type: GET_ITEMS_SUCCESS,
-        items: res.data
-    });
-    } else {
-        dispatch({
-            type: GET_ITEMS_FAILED
-    });
-    }
-}); 
-};
-};
-
-export function getRecommendedItems () {
-    return (dispatch) => {
+export function getRecommendedItems() {
+        return function(dispatch) {
         dispatch({
             type: GET_RECOMMENDED_ITEMS_REQUEST
         });
-
         getRecommendedItemsRequest().then(res => {
-    if (res && res.success) {
-        dispatch({
-        type: GET_RECOMMENDED_ITEMS_SUCCESS,
-        items: res.data
-    });
-    } else {
-        dispatch({
-            type: GET_RECOMMENDED_ITEMS_FAILED
-    });
-    }
-}); 
-};
-};
-
-export function applyPromo (code) {
-    return (dispatch) => {
-        dispatch({
-            type: APPLY_PROMO_REQUEST
+            if (res && res.success) {
+            dispatch({
+                type: GET_RECOMMENDED_ITEMS_SUCCESS,
+                items: res.data
+            });
+            } else {
+            dispatch({
+                type: GET_RECOMMENDED_ITEMS_FAILED
+            });
+            }
         });
-
-        applyPromoCodeRequest(code).then(res => {
-    if (res && res.success) {
-        dispatch({
-        type: APPLY_PROMO_SUCCESS,
-        value: { ...res, code }
-    });
-    } else {
-        dispatch({
-            type: APPLY_PROMO_FAILED
-    });
-    }
-}); 
-};
-};
+        };
+}

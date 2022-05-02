@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import styles from './app.module.css';
 import { Title } from '../../ui/title/title';
 import { Cart } from '../cart';
-//import { Delivery } from '../delivery';
+import { Delivery } from '../delivery';
 import { Checkout } from '../checkout';
 import { Recommend } from '../cart/recommend';
 import { TotalPrice } from '../common/total-price';
@@ -13,13 +13,18 @@ const title = { cart: 'Корзина', delivery: 'Доставка', checkout: 
 function App() {
 
   const step = useSelector(store => store.step );
-  console.log(step)
 
   const content = useMemo(
     () => {
       switch (step) {
         case 'cart': {
           return <Cart />;
+        }
+        case 'delivery': {
+          return <Delivery />;
+        }
+        case 'checkout': {
+          return <Checkout />;
         }
         default: {
           return <Cart />;
@@ -28,7 +33,6 @@ function App() {
     },
     [step]
   );
-
   return (
     <div className={styles.app}>
       <Title
@@ -43,4 +47,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

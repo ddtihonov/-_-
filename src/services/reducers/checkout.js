@@ -4,14 +4,14 @@ import {
     ORDER_CHECKOUT_SUCCESS
 } from '../actions/checkout';
 
-    const checkoutInitialState = {
+const checkoutInitialState = {
     orderCheckoutFailed: false,
     order: null,
     orderCheckoutRequest: false
 };
 
-    export const checkoutReducer = (state = checkoutInitialState, action) => {
-        switch (action.type) {
+export const checkoutReducer = (state = checkoutInitialState, action) => {
+    switch (action.type) {
         case ORDER_CHECKOUT_REQUEST: {
             return {
             ...state,
@@ -36,5 +36,5 @@ import {
         default: {
             return state;
         }
-        }
+    }
 };
