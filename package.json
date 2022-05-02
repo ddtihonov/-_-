@@ -1,5 +1,4 @@
 {
-
   "name": "shopping-cart",
   "version": "0.1.0",
   "private": true,
@@ -10,7 +9,7 @@
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
     "react": "^16.8.6",
-    "react-dnd": "^16.0.1",
+    "react-dnd": "^15.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^16.8.6",
     "react-redux": "^8.0.1",
